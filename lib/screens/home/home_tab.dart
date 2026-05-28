@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import '../../models/forecast.dart';
 import '../../models/growth_stage.dart';
 import '../../models/user_settings.dart';
+import '../../services/observation_schedule.dart';
 import '../../theme/app_colors.dart';
 import 'widgets/current_risk_card.dart';
+import 'widgets/observation_result_card.dart';
 import 'widgets/risk_outlook_list.dart';
 import 'widgets/risk_trend_chart.dart';
 
@@ -50,7 +52,18 @@ class HomeTab extends StatelessWidget {
           const SizedBox(height: 16),
           if (today == null)
             _LoadingOrError(error: error, onRetry: onRefresh)
-          else ...[
+          else if (ObservationSchedule.isObservationDay(today.targetDate)) ...[
+            // 예찰일(6-9월 1·16일): 도넛 게이지/한 줄 요약을 숨기고
+            // 실측 피해 면적율 카드를 메인으로 표시한다.
+            ObservationResultCard(
+              damageRate: today.inputs.observedDamageRate ?? 0,
+              baselineRate: ObservationSchedule.baselineDamageRate,
+            ),
+            const SizedBox(height: 14),
+            if (trend.isNotEmpty) RiskTrendChart(predictions: trend),
+            const SizedBox(height: 14),
+            if (outlook.isNotEmpty) RiskOutlookList(predictions: outlook),
+          ] else ...[
             CurrentRiskCard(prediction: today),
             const SizedBox(height: 14),
             if (today.summary != null && today.summary!.isNotEmpty)

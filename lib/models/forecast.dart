@@ -144,11 +144,16 @@ class PredictionInputs {
   final double? tempMean3;
   final double? rhMean3;
 
+  /// 예찰일(6-9월 1·16일)에 측정된 실측 피해 면적율 (0~1 비율).
+  /// 예찰일이 아니면 JSON에서 0 으로 들어온다.
+  final double? observedDamageRate;
+
   const PredictionInputs({
     this.windSpeedToday,
     this.precipitationToday,
     this.tempMean3,
     this.rhMean3,
+    this.observedDamageRate,
   });
 
   factory PredictionInputs.fromJson(Map<String, dynamic> json) {
@@ -158,6 +163,7 @@ class PredictionInputs {
       precipitationToday: toDouble(json['precipitation_today']),
       tempMean3: toDouble(json['temp_mean_3']),
       rhMean3: toDouble(json['rh_mean_3']),
+      observedDamageRate: toDouble(json['observed_damage_rate']),
     );
   }
 }
