@@ -18,7 +18,7 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   final SettingsService _settingsService = SettingsService();
   final ForecastService _forecastService = ForecastService();
 
@@ -31,7 +31,23 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _bootstrap();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  /// 앱이 background → foreground 로 돌아올 때마다 5시 경계 확인.
+  /// 사용자가 새벽 4시에 앱을 닫고 아침 6시에 열면 자동으로 새 데이터 받음.
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _refreshIfStale();
+    }
   }
 
   Future<void> _bootstrap() async {
@@ -77,6 +93,16 @@ class _HomeScreenState extends State<HomeScreen> {
     } catch (e) {
       if (!mounted) return;
       setState(() => _error = e);
+    }
+  }
+
+  /// 5시 경계가 지났는데 마지막 fetch 가 그 전이면 조용히 새로고침.
+  /// 캐시가 fresh 면 아무 일도 하지 않음 (네트워크 호출 없음).
+  Future<void> _refreshIfStale() async {
+    final region = _settings?.region;
+    if (region == null) return;
+    if (await _forecastService.isStale(region)) {
+      await _refresh();
     }
   }
 
