@@ -95,8 +95,9 @@ class ObservationResultCard extends StatelessWidget {
           const SizedBox(height: 16),
           Row(
             children: [
-              Icon(Icons.arrow_forward, color: diffColor, size: 18),
-              const SizedBox(width: 10),
+              //Icon(Icons.arrow_forward, color: diffColor, size: 18),
+              //const SizedBox(width: 10),
+              /*
               const Text(
                 '평년 대비',
                 style: TextStyle(
@@ -114,6 +115,7 @@ class ObservationResultCard extends StatelessWidget {
                   color: diffColor,
                 ),
               ),
+              */
             ],
           ),
         ],
