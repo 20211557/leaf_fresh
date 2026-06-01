@@ -28,6 +28,7 @@ class ObservationResultCard extends StatelessWidget {
     final diffPp = (damageRate - baselineRate) * 100;
     final isWorse = diffPp > 0.05;
     final isBetter = diffPp < -0.05;
+    
     final diffColor = isWorse
         ? _diffRed
         : isBetter
@@ -95,9 +96,9 @@ class ObservationResultCard extends StatelessWidget {
           const SizedBox(height: 16),
           Row(
             children: [
-              //Icon(Icons.arrow_forward, color: diffColor, size: 18),
-              //const SizedBox(width: 10),
-              /*
+              Icon(Icons.arrow_forward, color: diffColor, size: 18),
+              const SizedBox(width: 10),
+              
               const Text(
                 '평년 대비',
                 style: TextStyle(
@@ -115,7 +116,6 @@ class ObservationResultCard extends StatelessWidget {
                   color: diffColor,
                 ),
               ),
-              */
             ],
           ),
         ],
